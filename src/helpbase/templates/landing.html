@@ -18,10 +18,17 @@
                 </a>
             </div>
             <div class="flex items-center space-x-4">
+                {% if user %}
+                <a href="/dashboard" class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Dashboard</a>
+                <a href="/auth/logout" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                    Sign out
+                </a>
+                {% else %}
                 <a href="/auth/login" class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Sign in</a>
                 <a href="/auth/register" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
                     Get Started Free
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>

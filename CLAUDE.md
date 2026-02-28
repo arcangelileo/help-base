@@ -34,8 +34,8 @@ Phase: DEVELOPMENT
 - [x] Create project structure (pyproject.toml, src layout, configs)
 - [x] Set up FastAPI app skeleton with health check, config, and database
 - [x] Set up Alembic migrations and create initial models (User, HelpCenter, Category, Article, ArticleView)
-- [ ] Implement user authentication (register, login, logout, JWT)
-- [ ] Build auth UI pages (login, register) with Tailwind styling
+- [x] Implement user authentication (register, login, logout, JWT)
+- [x] Build auth UI pages (login, register) with Tailwind styling
 - [ ] Implement help center CRUD (API + dashboard UI)
 - [ ] Implement category CRUD (API + dashboard UI)
 - [ ] Implement article CRUD with Markdown editor and live preview
@@ -63,6 +63,19 @@ Phase: DEVELOPMENT
 - Created Jinja2 base template layout with Tailwind CDN
 - Built test infrastructure: conftest with async fixtures, 7 tests all passing (health check, landing page, model CRUD)
 - Python 3.13 environment with uv for package management
+
+### Session 3 — AUTH
+- Implemented full user authentication: register, login, logout with JWT httponly cookies
+- Auth service: bcrypt password hashing, JWT token creation/validation, user lookup/create
+- Auth dependencies: `get_current_user` (protected routes), `get_optional_user` (guest-friendly routes)
+- Auth router: GET/POST register, GET/POST login, GET logout — all with form validation and error handling
+- Dashboard router: authenticated dashboard page with stats (help centers, articles, views) and empty state
+- Beautiful Tailwind-styled auth pages: register form (name, email, password, confirm), login form (email, password)
+- Error display with preserved form data, auto-redirect when already logged in
+- Landing page updated to show auth state (Dashboard/Sign out vs Sign in/Get Started)
+- Added email-validator dependency for Pydantic EmailStr support
+- 27 new auth tests (password hashing, JWT tokens, registration flows, login flows, logout, dashboard access, auth redirects, email normalization, landing page auth state)
+- All 34 tests passing
 
 ## Known Issues
 (none yet)
@@ -92,12 +105,25 @@ help-base/
 │       │   ├── category.py         # Category model
 │       │   ├── article.py          # Article + ArticleRevision models
 │       │   └── analytics.py        # ArticleView model
-│       ├── routers/                # (empty, ready for auth/CRUD routes)
-│       ├── schemas/                # (empty, ready for Pydantic schemas)
-│       ├── services/               # (empty, ready for business logic)
+│       ├── dependencies.py          # Auth dependencies (get_current_user, get_optional_user)
+│       ├── routers/
+│       │   ├── __init__.py
+│       │   ├── auth.py             # Auth routes (register, login, logout)
+│       │   └── dashboard.py        # Dashboard routes (index with stats)
+│       ├── schemas/
+│       │   ├── __init__.py
+│       │   └── auth.py             # Auth Pydantic schemas
+│       ├── services/
+│       │   ├── __init__.py
+│       │   └── auth.py             # Auth service (password, JWT, user CRUD)
 │       ├── templates/
 │       │   ├── layouts/
 │       │   │   └── base.html       # Base template (Tailwind + Inter + HTMX)
+│       │   ├── auth/
+│       │   │   ├── login.html      # Login page
+│       │   │   └── register.html   # Registration page
+│       │   ├── dashboard/
+│       │   │   └── index.html      # Dashboard with stats and help center list
 │       │   └── landing.html        # Landing page with hero, features, pricing
 │       └── static/
 │           ├── css/
@@ -106,6 +132,7 @@ help-base/
 └── tests/
     ├── __init__.py
     ├── conftest.py                 # Async test fixtures (db, client)
+    ├── test_auth.py                # Auth tests (27)
     ├── test_health.py              # Health check + landing page tests (4)
     └── test_models.py              # Model CRUD tests (3)
 ```

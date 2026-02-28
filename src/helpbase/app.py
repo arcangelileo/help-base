@@ -3,14 +3,17 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from helpbase.config import settings
 from helpbase.database import engine
+from helpbase.dependencies import get_optional_user
 from helpbase.models.base import Base
+from helpbase.models.user import User
+from helpbase.routers import auth, dashboard
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 STATIC_DIR = Path(__file__).parent / "static"
@@ -39,6 +42,10 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # Templates
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
+# Include routers
+app.include_router(auth.router)
+app.include_router(dashboard.router)
+
 
 # --- Health Check ---
 
@@ -51,6 +58,11 @@ async def health_check():
 # --- Landing Page ---
 
 @app.get("/", response_class=HTMLResponse)
-async def landing_page(request: Request):
+async def landing_page(
+    request: Request,
+    current_user: User | None = Depends(get_optional_user),
+):
     """Landing page."""
-    return templates.TemplateResponse(request, "landing.html", {"settings": settings})
+    return templates.TemplateResponse(
+        request, "landing.html", {"settings": settings, "user": current_user}
+    )
