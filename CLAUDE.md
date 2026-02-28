@@ -36,8 +36,8 @@ Phase: DEVELOPMENT
 - [x] Set up Alembic migrations and create initial models (User, HelpCenter, Category, Article, ArticleView)
 - [x] Implement user authentication (register, login, logout, JWT)
 - [x] Build auth UI pages (login, register) with Tailwind styling
-- [ ] Implement help center CRUD (API + dashboard UI)
-- [ ] Implement category CRUD (API + dashboard UI)
+- [x] Implement help center CRUD (API + dashboard UI)
+- [x] Implement category CRUD (API + dashboard UI)
 - [ ] Implement article CRUD with Markdown editor and live preview
 - [ ] Build public-facing help center (article rendering, category nav, search)
 - [ ] Implement SQLite FTS5 search for articles
@@ -77,6 +77,20 @@ Phase: DEVELOPMENT
 - 27 new auth tests (password hashing, JWT tokens, registration flows, login flows, logout, dashboard access, auth redirects, email normalization, landing page auth state)
 - All 34 tests passing
 
+### Session 4 — HELP CENTER & CATEGORY CRUD
+- Help center service: create, read, update, delete with auto-slugification and unique slug resolution
+- Category service: create, read, update, delete, reorder with display_order tracking
+- Help center router with full CRUD: new/create, detail, edit/update, delete
+- Category router nested under help centers: new/create, edit/update, delete, reorder API
+- Reusable dashboard layout template (shared nav, breadcrumbs across all dashboard pages)
+- Help center create/edit forms: name, description, brand color picker with presets
+- Help center detail page: stats cards (categories, articles, uncategorized), category list with article counts
+- Category create/edit forms: name, description, emoji icon picker with presets
+- Delete confirmation dialogs for both help centers and categories
+- Authorization guards: users can only manage their own help centers and categories
+- 18 help center tests + 16 category tests covering CRUD, validation, slugification, authorization, empty states
+- All 68 tests passing
+
 ## Known Issues
 (none yet)
 
@@ -109,21 +123,32 @@ help-base/
 │       ├── routers/
 │       │   ├── __init__.py
 │       │   ├── auth.py             # Auth routes (register, login, logout)
-│       │   └── dashboard.py        # Dashboard routes (index with stats)
+│       │   ├── dashboard.py        # Dashboard routes (index with stats)
+│       │   └── help_centers.py     # Help center + category CRUD routes
 │       ├── schemas/
 │       │   ├── __init__.py
 │       │   └── auth.py             # Auth Pydantic schemas
 │       ├── services/
 │       │   ├── __init__.py
-│       │   └── auth.py             # Auth service (password, JWT, user CRUD)
+│       │   ├── auth.py             # Auth service (password, JWT, user CRUD)
+│       │   ├── helpcenter.py       # Help center CRUD service
+│       │   └── category.py         # Category CRUD service
 │       ├── templates/
 │       │   ├── layouts/
-│       │   │   └── base.html       # Base template (Tailwind + Inter + HTMX)
+│       │   │   ├── base.html       # Base template (Tailwind + Inter + HTMX)
+│       │   │   └── dashboard.html  # Shared dashboard layout (nav, user menu)
 │       │   ├── auth/
 │       │   │   ├── login.html      # Login page
 │       │   │   └── register.html   # Registration page
 │       │   ├── dashboard/
-│       │   │   └── index.html      # Dashboard with stats and help center list
+│       │   │   ├── index.html      # Dashboard with stats and help center list
+│       │   │   └── help_centers/
+│       │   │       ├── new.html    # Create help center form
+│       │   │       ├── detail.html # Help center detail with categories
+│       │   │       ├── edit.html   # Edit help center form + danger zone
+│       │   │       └── categories/
+│       │   │           ├── new.html  # Create category form
+│       │   │           └── edit.html # Edit category form + danger zone
 │       │   └── landing.html        # Landing page with hero, features, pricing
 │       └── static/
 │           ├── css/
@@ -133,6 +158,8 @@ help-base/
     ├── __init__.py
     ├── conftest.py                 # Async test fixtures (db, client)
     ├── test_auth.py                # Auth tests (27)
+    ├── test_categories.py          # Category CRUD tests (16)
     ├── test_health.py              # Health check + landing page tests (4)
+    ├── test_help_centers.py        # Help center CRUD tests (18)
     └── test_models.py              # Model CRUD tests (3)
 ```

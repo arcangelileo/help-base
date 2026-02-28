@@ -1,149 +1,112 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/dashboard.html" %}
 
 {% block title %}Dashboard — HelpBase{% endblock %}
 
-{% block body %}
-<div class="min-h-full flex flex-col">
-    <!-- Dashboard Nav -->
-    <nav class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center space-x-8">
-                    <a href="/dashboard" class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <span class="text-xl font-bold text-gray-900">HelpBase</span>
-                    </a>
-                    <div class="hidden sm:flex items-center space-x-1">
-                        <a href="/dashboard" class="px-3 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">Dashboard</a>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
-                            <span class="text-sm font-medium text-brand-700">{{ user.full_name[0]|upper }}</span>
-                        </div>
-                        <span class="hidden sm:block text-sm font-medium text-gray-700">{{ user.full_name }}</span>
-                    </div>
-                    <a href="/auth/logout" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">Sign out</a>
-                </div>
+{% block content %}
+<!-- Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Welcome back, {{ user.full_name.split(' ')[0] }}</h1>
+    <p class="mt-1 text-gray-600">Manage your help centers and documentation.</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Help Centers</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ help_center_count }}</p>
+            </div>
+            <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
             </div>
         </div>
-    </nav>
-
-    <!-- Dashboard Content -->
-    <main class="flex-1">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold text-gray-900">Welcome back, {{ user.full_name.split(' ')[0] }}</h1>
-                <p class="mt-1 text-gray-600">Manage your help centers and documentation.</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total Articles</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ article_count }}</p>
             </div>
-
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white border border-gray-200 rounded-xl p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Help Centers</p>
-                            <p class="mt-1 text-3xl font-bold text-gray-900">{{ help_center_count }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white border border-gray-200 rounded-xl p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Total Articles</p>
-                            <p class="mt-1 text-3xl font-bold text-gray-900">{{ article_count }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white border border-gray-200 rounded-xl p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Total Views</p>
-                            <p class="mt-1 text-3xl font-bold text-gray-900">{{ total_views }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+            <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
             </div>
+        </div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total Views</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ total_views }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Help Centers Section -->
-            <div class="bg-white border border-gray-200 rounded-xl">
-                <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900">Your Help Centers</h2>
-                        <p class="mt-0.5 text-sm text-gray-500">Create and manage your knowledge bases</p>
-                    </div>
-                    <a href="/dashboard/help-centers/new" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        New Help Center
-                    </a>
-                </div>
+<!-- Help Centers Section -->
+<div class="bg-white border border-gray-200 rounded-xl">
+    <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+        <div>
+            <h2 class="text-lg font-semibold text-gray-900">Your Help Centers</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Create and manage your knowledge bases</p>
+        </div>
+        <a href="/dashboard/help-centers/new" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            New Help Center
+        </a>
+    </div>
 
-                {% if help_centers %}
-                <div class="divide-y divide-gray-200">
-                    {% for hc in help_centers %}
-                    <a href="/dashboard/help-centers/{{ hc.id }}" class="block px-6 py-4 hover:bg-gray-50 transition-colors">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: {{ hc.primary_color }}20;">
-                                    <svg class="w-5 h-5" style="color: {{ hc.primary_color }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-semibold text-gray-900">{{ hc.name }}</h3>
-                                    <p class="text-sm text-gray-500">/h/{{ hc.slug }}</p>
-                                </div>
-                            </div>
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </div>
-                    </a>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="px-6 py-16 text-center">
-                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    {% if help_centers %}
+    <div class="divide-y divide-gray-200">
+        {% for hc in help_centers %}
+        <a href="/dashboard/help-centers/{{ hc.id }}" class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: {{ hc.primary_color }}20;">
+                        <svg class="w-5 h-5" style="color: {{ hc.primary_color }};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-1">No help centers yet</h3>
-                    <p class="text-gray-500 mb-6">Create your first help center to start building documentation.</p>
-                    <a href="/dashboard/help-centers/new" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Create Help Center
-                    </a>
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-900">{{ hc.name }}</h3>
+                        <p class="text-sm text-gray-500">/h/{{ hc.slug }}</p>
+                    </div>
                 </div>
-                {% endif %}
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
             </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-6 py-16 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
         </div>
-    </main>
+        <h3 class="text-lg font-semibold text-gray-900 mb-1">No help centers yet</h3>
+        <p class="text-gray-500 mb-6">Create your first help center to start building documentation.</p>
+        <a href="/dashboard/help-centers/new" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Create Help Center
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

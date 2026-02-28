@@ -1,0 +1,127 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Edit {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium">Settings</li>
+    </ol>
+</nav>
+
+<div class="max-w-2xl">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Help Center Settings</h1>
+        <p class="mt-1 text-gray-600">Update your help center's name, description, and branding.</p>
+    </div>
+
+    {% if errors %}
+    <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+        <div class="flex items-start">
+            <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                {% for error in errors %}
+                <p class="text-sm text-red-700{% if not loop.first %} mt-1{% endif %}">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/dashboard/help-centers/{{ hc.id }}/edit" class="bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div class="p-6 space-y-6">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ form_data.name }}"
+                    required
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors text-sm"
+                >
+                <p class="mt-1.5 text-xs text-gray-500">Public URL: <span class="font-mono">/h/{{ hc.slug }}</span></p>
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1.5">Description <span class="text-gray-400 font-normal">(optional)</span></label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    placeholder="A brief description of what this help center covers"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors text-sm resize-none"
+                >{{ form_data.description }}</textarea>
+            </div>
+
+            <div>
+                <label for="primary_color" class="block text-sm font-medium text-gray-700 mb-1.5">Brand Color</label>
+                <div class="flex items-center space-x-3">
+                    <input
+                        type="color"
+                        id="primary_color_picker"
+                        value="{{ form_data.primary_color }}"
+                        class="w-10 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5"
+                        oninput="document.getElementById('primary_color').value = this.value"
+                    >
+                    <input
+                        type="text"
+                        id="primary_color"
+                        name="primary_color"
+                        value="{{ form_data.primary_color }}"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        maxlength="7"
+                        class="w-32 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 font-mono text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors"
+                        oninput="document.getElementById('primary_color_picker').value = this.value"
+                    >
+                    <div class="flex space-x-1.5">
+                        {% for color in ['#4F46E5', '#0891B2', '#059669', '#D97706', '#DC2626', '#7C3AED'] %}
+                        <button
+                            type="button"
+                            class="w-7 h-7 rounded-full border-2 border-transparent hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-brand-500"
+                            style="background-color: {{ color }};"
+                            onclick="document.getElementById('primary_color').value='{{ color }}';document.getElementById('primary_color_picker').value='{{ color }}';"
+                            title="{{ color }}"
+                        ></button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-xl flex items-center justify-end space-x-3">
+            <a href="/dashboard/help-centers/{{ hc.id }}" class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Cancel
+            </a>
+            <button type="submit" class="px-6 py-2.5 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+                Save Changes
+            </button>
+        </div>
+    </form>
+
+    <!-- Danger Zone -->
+    <div class="mt-8 bg-white border border-red-200 rounded-xl shadow-sm">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-red-600 mb-1">Danger Zone</h2>
+            <p class="text-sm text-gray-600 mb-4">Permanently delete this help center and all its articles. This action cannot be undone.</p>
+            <form method="POST" action="/dashboard/help-centers/{{ hc.id }}/delete" onsubmit="return confirm('Are you sure you want to delete &quot;{{ hc.name }}&quot;? All categories and articles will be permanently deleted.');">
+                <button type="submit" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
+                    Delete Help Center
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
