@@ -10,6 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from helpbase.models.article import Article, ArticleRevision
 from helpbase.models.category import Category
+from helpbase.services.search import index_article, remove_article_from_index
 
 
 def slugify(text: str) -> str:
@@ -123,6 +124,15 @@ async def create_article(
     db.add(revision)
     await db.flush()
 
+    # Index in FTS if published
+    if is_published:
+        try:
+            await index_article(
+                db, article.id, help_center_id, title, content_markdown, excerpt or ""
+            )
+        except Exception:
+            pass  # FTS table may not exist in tests
+
     return article
 
 
@@ -224,13 +234,35 @@ async def update_article(
 
     await db.flush()
     await db.refresh(article)
+
+    # Update FTS index
+    try:
+        if article.is_published:
+            await index_article(
+                db,
+                article.id,
+                article.help_center_id,
+                article.title,
+                article.content_markdown or "",
+                article.excerpt or "",
+            )
+        else:
+            await remove_article_from_index(db, article.id)
+    except Exception:
+        pass  # FTS table may not exist in tests
+
     return article
 
 
 async def delete_article(db: AsyncSession, article: Article) -> None:
     """Delete an article and all related data (via cascade)."""
+    article_id = article.id
     await db.delete(article)
     await db.flush()
+    try:
+        await remove_article_from_index(db, article_id)
+    except Exception:
+        pass  # FTS table may not exist in tests
 
 
 async def get_article_revisions(

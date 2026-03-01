@@ -1,0 +1,95 @@
+{% extends "public/base.html" %}
+
+{% block title %}{% if query %}Search: {{ query }}{% else %}Search{% endif %} — {{ hc.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+            <li><a href="/h/{{ hc.slug }}" class="hover:text-gray-700 transition-colors">Home</a></li>
+            <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+            <li class="text-gray-900 font-medium">Search</li>
+        </ol>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Main content -->
+        <div class="flex-1 min-w-0">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Search Articles</h1>
+
+            <!-- Search Form -->
+            <form action="/h/{{ hc.slug }}/search" method="GET" class="mb-8">
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search for articles..." autocomplete="off" class="w-full pl-12 pr-4 py-3 text-base border border-gray-300 rounded-xl bg-white search-input transition-all outline-none" autofocus>
+                </div>
+            </form>
+
+            <!-- Results -->
+            {% if query %}
+            <div class="mb-4">
+                <p class="text-sm text-gray-500">
+                    {% if results %}
+                    {{ results|length }} result{{ 's' if results|length != 1 }} for "<span class="font-medium text-gray-700">{{ query }}</span>"
+                    {% else %}
+                    No results for "<span class="font-medium text-gray-700">{{ query }}</span>"
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if results %}
+            <div class="space-y-3">
+                {% for result in results %}
+                <a href="/h/{{ hc.slug }}/articles/{{ result.slug }}?q={{ query }}" class="block bg-white border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-sm transition-all group" id="search-result-{{ loop.index }}">
+                    <h3 class="text-base font-semibold text-gray-900 group-hover:accent-text transition-colors mb-1">{{ result.title }}</h3>
+                    {% if result.snippet %}
+                    <p class="text-sm text-gray-600 leading-relaxed">{{ result.snippet|safe }}</p>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12 bg-white border border-gray-200 rounded-xl">
+                <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">No results found</h3>
+                <p class="text-gray-500 mb-4">Try different keywords or browse categories.</p>
+                <a href="/h/{{ hc.slug }}" class="inline-flex items-center text-sm font-medium accent-text hover:opacity-80 transition-opacity">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to help center
+                </a>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        {% if categories %}
+        <div class="lg:w-64 flex-shrink-0">
+            <div class="sticky top-24">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Categories</h3>
+                <nav class="space-y-1">
+                    {% for item in categories %}
+                    <a href="/h/{{ hc.slug }}/category/{{ item.category.slug }}" class="flex items-center justify-between px-3 py-2 text-sm rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+                        <span class="flex items-center space-x-2 truncate">
+                            {% if item.category.icon %}<span>{{ item.category.icon }}</span>{% endif %}
+                            <span>{{ item.category.name }}</span>
+                        </span>
+                        <span class="text-xs text-gray-400 ml-2 flex-shrink-0">{{ item.count }}</span>
+                    </a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

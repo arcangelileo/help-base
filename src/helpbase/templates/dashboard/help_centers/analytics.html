@@ -1,0 +1,170 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Analytics — {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+<a href="/dashboard/help-centers/{{ hc.id }}/analytics" class="px-3 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">Analytics</a>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium">Analytics</li>
+    </ol>
+</nav>
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Analytics</h1>
+        <p class="mt-1 text-gray-600">View tracking and insights for {{ hc.name }}</p>
+    </div>
+    <a href="/h/{{ hc.slug }}" target="_blank" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+        </svg>
+        View Public Site
+    </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total Views</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ total_views }}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Published Articles</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ article_count }}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Top Searches</p>
+                <p class="mt-1 text-3xl font-bold text-gray-900">{{ top_searches|length }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Popular Articles -->
+    <div class="bg-white border border-gray-200 rounded-xl">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Popular Articles</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Most viewed articles</p>
+        </div>
+        {% if popular_articles %}
+        <div class="divide-y divide-gray-200">
+            {% for article in popular_articles %}
+            <div class="px-6 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-500">{{ loop.index }}</span>
+                    <a href="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}" class="text-sm font-medium text-gray-900 hover:text-brand-600 truncate transition-colors">{{ article.title }}</a>
+                </div>
+                <span class="text-sm text-gray-500 font-medium flex-shrink-0 ml-3">{{ article.view_count }} view{{ 's' if article.view_count != 1 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-10 text-center">
+            <p class="text-sm text-gray-500">No article views yet. Share your help center to start getting views.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Top Searches -->
+    <div class="bg-white border border-gray-200 rounded-xl">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Top Search Queries</h2>
+            <p class="mt-0.5 text-sm text-gray-500">What your users are searching for</p>
+        </div>
+        {% if top_searches %}
+        <div class="divide-y divide-gray-200">
+            {% for search in top_searches %}
+            <div class="px-6 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span class="text-sm text-gray-900">"{{ search.query }}"</span>
+                </div>
+                <span class="text-sm text-gray-500 font-medium">{{ search.count }}x</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-10 text-center">
+            <p class="text-sm text-gray-500">No search queries recorded yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent Views -->
+<div class="mt-8 bg-white border border-gray-200 rounded-xl">
+    <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
+        <p class="mt-0.5 text-sm text-gray-500">Latest article views</p>
+    </div>
+    {% if recent_views %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-gray-200 bg-gray-50">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Article</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">When</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Search Query</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Referrer</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for view in recent_views %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-3 text-gray-900 font-medium truncate max-w-xs">{{ view.title }}</td>
+                    <td class="px-6 py-3 text-gray-500 whitespace-nowrap">{{ view.viewed_at }}</td>
+                    <td class="px-6 py-3 text-gray-500">{{ view.search_query or '—' }}</td>
+                    <td class="px-6 py-3 text-gray-500 truncate max-w-xs">{{ view.referrer or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="px-6 py-10 text-center">
+        <p class="text-sm text-gray-500">No views recorded yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

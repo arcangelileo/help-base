@@ -7,6 +7,7 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import text
 
 from helpbase.config import settings
 from helpbase.database import engine
@@ -14,6 +15,8 @@ from helpbase.dependencies import get_optional_user
 from helpbase.models.base import Base
 from helpbase.models.user import User
 from helpbase.routers import articles, auth, dashboard, help_centers
+from helpbase.routers.analytics import router as analytics_router
+from helpbase.routers.public import router as public_router
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 STATIC_DIR = Path(__file__).parent / "static"
@@ -21,9 +24,24 @@ STATIC_DIR = Path(__file__).parent / "static"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Create database tables on startup."""
+    """Create database tables and FTS index on startup."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Create FTS5 virtual table for search
+        await conn.execute(
+            text(
+                """
+                CREATE VIRTUAL TABLE IF NOT EXISTS articles_fts USING fts5(
+                    article_id UNINDEXED,
+                    help_center_id UNINDEXED,
+                    title,
+                    content,
+                    excerpt,
+                    tokenize='porter unicode61'
+                )
+                """
+            )
+        )
     yield
     await engine.dispose()
 
@@ -47,6 +65,8 @@ app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(help_centers.router)
 app.include_router(articles.router)
+app.include_router(analytics_router)
+app.include_router(public_router)
 
 
 # --- Health Check ---

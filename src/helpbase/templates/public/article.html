@@ -1,0 +1,96 @@
+{% extends "public/base.html" %}
+
+{% block title %}{{ article.title }} — {{ hc.name }}{% endblock %}
+
+{% block head %}
+<style>
+    .article-content h1 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; line-height: 1.3; }
+    .article-content h2 { font-size: 1.5rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem; color: #111827; line-height: 1.35; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
+    .article-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1f2937; }
+    .article-content h4 { font-size: 1.125rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #1f2937; }
+    .article-content p { margin-bottom: 1rem; line-height: 1.75; color: #374151; }
+    .article-content ul, .article-content ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #374151; }
+    .article-content li { margin-bottom: 0.25rem; line-height: 1.75; }
+    .article-content ul { list-style-type: disc; }
+    .article-content ol { list-style-type: decimal; }
+    .article-content code { font-size: 0.875rem; background: #f3f4f6; padding: 0.125rem 0.375rem; border-radius: 0.25rem; color: #dc2626; font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+    .article-content pre { margin-bottom: 1rem; border-radius: 0.5rem; overflow-x: auto; background: #1e293b; border: 1px solid #334155; }
+    .article-content pre code { display: block; padding: 1rem 1.25rem; background: transparent; color: #e2e8f0; }
+    .article-content blockquote { border-left: 4px solid {{ hc.primary_color }}; padding: 0.75rem 1rem; margin-bottom: 1rem; background: {{ hc.primary_color }}08; color: #4b5563; }
+    .article-content blockquote p { margin-bottom: 0; }
+    .article-content a { color: {{ hc.primary_color }}; text-decoration: underline; text-underline-offset: 2px; }
+    .article-content a:hover { opacity: 0.8; }
+    .article-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    .article-content th, .article-content td { border: 1px solid #e5e7eb; padding: 0.5rem 0.75rem; text-align: left; }
+    .article-content th { background: #f9fafb; font-weight: 600; }
+    .article-content hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
+    .article-content img { max-width: 100%; border-radius: 0.5rem; margin-bottom: 1rem; }
+    .article-content .task-list-item { list-style: none; margin-left: -1.5rem; }
+    .article-content .task-list-item input[type="checkbox"] { margin-right: 0.5rem; }
+    .anchor-link { margin-left: 0.5rem; color: #9ca3af; text-decoration: none; opacity: 0; transition: opacity 0.15s; }
+    .article-content h1:hover .anchor-link,
+    .article-content h2:hover .anchor-link,
+    .article-content h3:hover .anchor-link { opacity: 1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+            <li><a href="/h/{{ hc.slug }}" class="hover:text-gray-700 transition-colors">Home</a></li>
+            {% if article_category %}
+            <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+            <li><a href="/h/{{ hc.slug }}/category/{{ article_category.slug }}" class="hover:text-gray-700 transition-colors">{{ article_category.name }}</a></li>
+            {% endif %}
+            <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+            <li class="text-gray-900 font-medium truncate max-w-xs">{{ article.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Main content -->
+        <div class="flex-1 min-w-0">
+            <article class="bg-white border border-gray-200 rounded-xl">
+                <div class="px-8 py-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ article.title }}</h1>
+                    {% if article.excerpt %}
+                    <p class="text-lg text-gray-500 mb-6">{{ article.excerpt }}</p>
+                    {% endif %}
+
+                    {% if content_html %}
+                    <div class="article-content mt-6">
+                        {{ content_html|safe }}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">This article is being written.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+
+        <!-- Sidebar -->
+        {% if categories %}
+        <div class="lg:w-64 flex-shrink-0">
+            <div class="sticky top-24">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Categories</h3>
+                <nav class="space-y-1">
+                    {% for item in categories %}
+                    <a href="/h/{{ hc.slug }}/category/{{ item.category.slug }}" class="flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors {% if article_category and item.category.id == article_category.id %}accent-bg-medium accent-text font-medium{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-900{% endif %}">
+                        <span class="flex items-center space-x-2 truncate">
+                            {% if item.category.icon %}<span>{{ item.category.icon }}</span>{% endif %}
+                            <span>{{ item.category.name }}</span>
+                        </span>
+                        <span class="text-xs text-gray-400 ml-2 flex-shrink-0">{{ item.count }}</span>
+                    </a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "public/base.html" %}
+
+{% block title %}{{ category.name }} — {{ hc.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+            <li><a href="/h/{{ hc.slug }}" class="hover:text-gray-700 transition-colors">Home</a></li>
+            <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+            <li class="text-gray-900 font-medium">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Main content -->
+        <div class="flex-1 min-w-0">
+            <!-- Category Header -->
+            <div class="flex items-center space-x-4 mb-8">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center accent-bg-medium flex-shrink-0">
+                    {% if category.icon %}
+                    <span class="text-2xl">{{ category.icon }}</span>
+                    {% else %}
+                    <svg class="w-6 h-6 accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                    </svg>
+                    {% endif %}
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ category.name }}</h1>
+                    {% if category.description %}
+                    <p class="mt-1 text-gray-600">{{ category.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Articles -->
+            {% if articles %}
+            <div class="bg-white border border-gray-200 rounded-xl divide-y divide-gray-200">
+                {% for article in articles %}
+                <a href="/h/{{ hc.slug }}/articles/{{ article.slug }}" class="block px-6 py-4 hover:bg-gray-50 transition-colors group">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0 mr-4">
+                            <h3 class="text-sm font-semibold text-gray-900 group-hover:accent-text transition-colors">{{ article.title }}</h3>
+                            {% if article.excerpt %}
+                            <p class="mt-1 text-sm text-gray-500 truncate">{{ article.excerpt }}</p>
+                            {% endif %}
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <p class="text-gray-500">No articles in this category yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        {% if categories %}
+        <div class="lg:w-64 flex-shrink-0">
+            <div class="sticky top-24">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Categories</h3>
+                <nav class="space-y-1">
+                    {% for item in categories %}
+                    <a href="/h/{{ hc.slug }}/category/{{ item.category.slug }}" class="flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors {% if item.category.id == category.id %}accent-bg-medium accent-text font-medium{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-900{% endif %}">
+                        <span class="flex items-center space-x-2 truncate">
+                            {% if item.category.icon %}<span>{{ item.category.icon }}</span>{% endif %}
+                            <span>{{ item.category.name }}</span>
+                        </span>
+                        <span class="text-xs text-gray-400 ml-2 flex-shrink-0">{{ item.count }}</span>
+                    </a>
+                    {% endfor %}
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

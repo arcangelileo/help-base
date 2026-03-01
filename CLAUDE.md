@@ -39,9 +39,9 @@ Phase: DEVELOPMENT
 - [x] Implement help center CRUD (API + dashboard UI)
 - [x] Implement category CRUD (API + dashboard UI)
 - [x] Implement article CRUD with Markdown editor and live preview
-- [ ] Build public-facing help center (article rendering, category nav, search)
-- [ ] Implement SQLite FTS5 search for articles
-- [ ] Add article view tracking and analytics dashboard
+- [x] Build public-facing help center (article rendering, category nav, search)
+- [x] Implement SQLite FTS5 search for articles
+- [x] Add article view tracking and analytics dashboard
 - [ ] Build embeddable search widget (JS snippet + iframe endpoint)
 - [ ] Write comprehensive tests (auth, CRUD, search, public pages)
 - [ ] Write Dockerfile and docker-compose.yml
@@ -104,6 +104,19 @@ Phase: DEVELOPMENT
 - 31 new article tests: list (empty/populated/publish status), create (success, markdown rendering, published/draft, validation, slugification, duplicate slugs), detail (info, actions, nonexistent, empty content), edit (renders, update title/content, validation, preserve data on error), delete, toggle publish (both directions), markdown preview API, authorization (other user cannot access), help center detail articles link
 - All 99 tests passing
 
+### Session 6 — PUBLIC HELP CENTER, FTS5 SEARCH & ANALYTICS
+- FTS5 search service: index/remove articles, prefix-matching search with `snippet()` highlights, porter tokenizer, rebuild index utility
+- Analytics service: view tracking (ArticleView + view_count increment), popular articles, total views, top search queries, recent activity
+- Public help center router: home (`/h/{slug}`), category (`/h/{slug}/category/{cat_slug}`), article (`/h/{slug}/articles/{article_slug}`), search page, JSON search API
+- Analytics dashboard router: authenticated analytics page with stats cards, popular articles, top searches, recent activity table
+- Public templates (6 files): base layout with custom brand colors via CSS variables, home with hero search + category grid + recent articles, category page with article listing + sidebar, article page with styled markdown prose + breadcrumbs, search page with highlighted snippets, 404 page
+- Analytics dashboard template: stats cards (total views, published articles, top searches), popular articles ranking, search query list, recent activity table
+- FTS5 virtual table created in app lifespan startup and test fixtures
+- Article service updated to hook FTS indexing into create/update/delete operations
+- Help center detail page updated with Analytics button
+- 27 new tests: public home/404, categories display, articles rendering, draft exclusion, view tracking, breadcrumbs, category pages, search (empty/results/no results/draft exclusion), search API, analytics dashboard (auth/render/authorization), view tracking with search query, header search form
+- All 126 tests passing
+
 ## Known Issues
 - bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3
 
@@ -136,18 +149,22 @@ help-base/
 │       ├── routers/
 │       │   ├── __init__.py
 │       │   ├── auth.py             # Auth routes (register, login, logout)
+│       │   ├── analytics.py        # Analytics dashboard route
 │       │   ├── articles.py         # Article CRUD routes + markdown preview API
 │       │   ├── dashboard.py        # Dashboard routes (index with stats)
-│       │   └── help_centers.py     # Help center + category CRUD routes
+│       │   ├── help_centers.py     # Help center + category CRUD routes
+│       │   └── public.py           # Public help center routes (home, article, search)
 │       ├── schemas/
 │       │   ├── __init__.py
 │       │   └── auth.py             # Auth Pydantic schemas
 │       ├── services/
 │       │   ├── __init__.py
+│       │   ├── analytics.py        # View tracking + analytics aggregation
 │       │   ├── auth.py             # Auth service (password, JWT, user CRUD)
-│       │   ├── article.py          # Article CRUD service + markdown rendering
+│       │   ├── article.py          # Article CRUD service + markdown rendering + FTS hooks
 │       │   ├── helpcenter.py       # Help center CRUD service
-│       │   └── category.py         # Category CRUD service
+│       │   ├── category.py         # Category CRUD service
+│       │   └── search.py           # FTS5 search service (index, search, rebuild)
 │       ├── templates/
 │       │   ├── layouts/
 │       │   │   ├── base.html       # Base template (Tailwind + Inter + HTMX)
@@ -161,6 +178,7 @@ help-base/
 │       │   │       ├── new.html    # Create help center form
 │       │   │       ├── detail.html # Help center detail with categories
 │       │   │       ├── edit.html   # Edit help center form + danger zone
+│       │   │       ├── analytics.html # Analytics dashboard (views, searches)
 │       │   │       ├── categories/
 │       │   │       │   ├── new.html  # Create category form
 │       │   │       │   └── edit.html # Edit category form + danger zone
@@ -169,6 +187,13 @@ help-base/
 │       │   │           ├── new.html    # Create article with Markdown editor
 │       │   │           ├── detail.html # Article detail with rendered markdown
 │       │   │           └── edit.html   # Edit article with Markdown editor
+│       │   ├── public/
+│       │   │   ├── base.html       # Public layout with brand colors
+│       │   │   ├── home.html       # Help center home (search, categories, articles)
+│       │   │   ├── category.html   # Category page with article list
+│       │   │   ├── article.html    # Article page with rendered markdown
+│       │   │   ├── search.html     # Search results page
+│       │   │   └── 404.html        # Not found page
 │       │   └── landing.html        # Landing page with hero, features, pricing
 │       └── static/
 │           ├── css/
@@ -182,5 +207,6 @@ help-base/
     ├── test_categories.py          # Category CRUD tests (16)
     ├── test_health.py              # Health check + landing page tests (4)
     ├── test_help_centers.py        # Help center CRUD tests (18)
-    └── test_models.py              # Model CRUD tests (3)
+    ├── test_models.py              # Model CRUD tests (3)
+    └── test_public.py              # Public pages, search, analytics tests (27)
 ```

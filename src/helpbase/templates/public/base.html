@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ hc.name }}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        accent: {
+                            50: '{{ hc.primary_color }}0D',
+                            100: '{{ hc.primary_color }}1A',
+                            200: '{{ hc.primary_color }}33',
+                            500: '{{ hc.primary_color }}',
+                            600: '{{ hc.primary_color }}',
+                            700: '{{ hc.primary_color }}E6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .accent-bg { background-color: {{ hc.primary_color }}; }
+        .accent-bg-light { background-color: {{ hc.primary_color }}0D; }
+        .accent-bg-medium { background-color: {{ hc.primary_color }}1A; }
+        .accent-text { color: {{ hc.primary_color }}; }
+        .accent-border { border-color: {{ hc.primary_color }}; }
+        .accent-bg:hover { background-color: {{ hc.primary_color }}E6; }
+        .search-input:focus { border-color: {{ hc.primary_color }}; box-shadow: 0 0 0 3px {{ hc.primary_color }}26; }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="h-full font-sans antialiased bg-white text-gray-900">
+    <!-- Header -->
+    <header class="border-b border-gray-200 bg-white sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="/h/{{ hc.slug }}" class="flex items-center space-x-3 group">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center accent-bg">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold text-gray-900 group-hover:text-gray-700 transition-colors">{{ hc.name }}</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <form action="/h/{{ hc.slug }}/search" method="GET" class="hidden sm:block">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" name="q" placeholder="Search articles..." value="{{ query if query else '' }}" class="w-64 pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:bg-white search-input transition-all outline-none">
+                        </div>
+                    </form>
+                    <a href="/h/{{ hc.slug }}/search" class="sm:hidden p-2 text-gray-500 hover:text-gray-700 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-gray-500">{{ hc.name }} Help Center</p>
+                <p class="text-xs text-gray-400">Powered by <a href="/" class="hover:text-gray-600 transition-colors font-medium">HelpBase</a></p>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

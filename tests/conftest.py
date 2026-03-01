@@ -2,6 +2,7 @@
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from helpbase.app import app
@@ -16,11 +17,27 @@ TestingSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_
 
 @pytest.fixture(autouse=True)
 async def setup_db():
-    """Create tables before each test and drop after."""
+    """Create tables and FTS index before each test and drop after."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Create FTS5 virtual table for search tests
+        await conn.execute(
+            text(
+                """
+                CREATE VIRTUAL TABLE IF NOT EXISTS articles_fts USING fts5(
+                    article_id UNINDEXED,
+                    help_center_id UNINDEXED,
+                    title,
+                    content,
+                    excerpt,
+                    tokenize='porter unicode61'
+                )
+                """
+            )
+        )
     yield
     async with engine.begin() as conn:
+        await conn.execute(text("DROP TABLE IF EXISTS articles_fts"))
         await conn.run_sync(Base.metadata.drop_all)
 
 
