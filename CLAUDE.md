@@ -1,6 +1,6 @@
 # HelpBase
 
-Phase: DEVELOPMENT
+Phase: QA
 
 ## Project Spec
 - **Repo**: https://github.com/arcangelileo/help-base
@@ -45,7 +45,7 @@ Phase: DEVELOPMENT
 - [x] Build embeddable search widget (JS snippet + iframe endpoint)
 - [x] Write comprehensive tests (auth, CRUD, search, public pages)
 - [x] Write Dockerfile and docker-compose.yml
-- [ ] Write README with setup and deploy instructions
+- [x] Write README with setup and deploy instructions
 
 ## Progress Log
 ### Session 1 — IDEATION
@@ -128,6 +128,11 @@ Phase: DEVELOPMENT
 - 22 new widget tests: JS snippet (serves JavaScript, contains slug/brand color/name, CORS headers, search functionality, nonexistent HC), search API (JSON results, CORS, empty query, nonexistent HC, excludes drafts, result URLs, CORS preflight), dashboard page (auth, renders, correct snippet, authorization, nonexistent HC, how-it-works, preview, widget link)
 - All 148 tests passing
 
+### Session 8 — README & QA PHASE
+- Wrote comprehensive README.md: project overview, features list, tech stack, quick start (local dev + Docker), configuration table, test instructions, project structure, embeddable widget usage, full API endpoint reference
+- All 148 tests passing, all backlog items complete
+- Advanced project phase from DEVELOPMENT to QA
+
 ## Known Issues
 - bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3
 
@@ -135,6 +140,7 @@ Phase: DEVELOPMENT
 ```
 help-base/
 ├── CLAUDE.md
+├── README.md                      # Setup and deploy instructions
 ├── pyproject.toml
 ├── alembic.ini
 ├── Dockerfile                     # Production Docker image
