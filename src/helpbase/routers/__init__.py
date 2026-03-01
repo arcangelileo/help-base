@@ -1,5 +1,5 @@
 """API routers."""
 
-from helpbase.routers import auth, dashboard, help_centers
+from helpbase.routers import articles, auth, dashboard, help_centers
 
-__all__ = ["auth", "dashboard", "help_centers"]
+__all__ = ["articles", "auth", "dashboard", "help_centers"]

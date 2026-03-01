@@ -1,0 +1,93 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Articles — {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+<a href="/dashboard/help-centers/{{ hc.id }}/articles" class="px-3 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">Articles</a>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium">Articles</li>
+    </ol>
+</nav>
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Articles</h1>
+        <p class="mt-1 text-gray-600">{{ articles|length }} article{{ 's' if articles|length != 1 }} in {{ hc.name }}</p>
+    </div>
+    <a href="/dashboard/help-centers/{{ hc.id }}/articles/new" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        New Article
+    </a>
+</div>
+
+<!-- Articles List -->
+<div class="bg-white border border-gray-200 rounded-xl">
+    {% if articles %}
+    <div class="divide-y divide-gray-200">
+        {% for article in articles %}
+        <a href="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}" class="block px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div class="flex items-center justify-between">
+                <div class="flex-1 min-w-0 mr-4">
+                    <div class="flex items-center space-x-3">
+                        <h3 class="text-sm font-semibold text-gray-900 truncate">{{ article.title }}</h3>
+                        {% if article.is_published %}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Published</span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Draft</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center space-x-3 mt-1">
+                        <span class="text-xs text-gray-500 font-mono">/{{ article.slug }}</span>
+                        {% if article.category_id and category_map.get(article.category_id) %}
+                        <span class="text-xs text-gray-400">|</span>
+                        <span class="inline-flex items-center text-xs text-gray-500">
+                            {% if category_map[article.category_id].icon %}
+                            <span class="mr-1">{{ category_map[article.category_id].icon }}</span>
+                            {% endif %}
+                            {{ category_map[article.category_id].name }}
+                        </span>
+                        {% endif %}
+                        <span class="text-xs text-gray-400">|</span>
+                        <span class="text-xs text-gray-500">{{ article.view_count }} view{{ 's' if article.view_count != 1 }}</span>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-6 py-16 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-1">No articles yet</h3>
+        <p class="text-gray-500 mb-6">Write your first article to start building your knowledge base.</p>
+        <a href="/dashboard/help-centers/{{ hc.id }}/articles/new" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Write Article
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

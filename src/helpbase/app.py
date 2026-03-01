@@ -13,7 +13,7 @@ from helpbase.database import engine
 from helpbase.dependencies import get_optional_user
 from helpbase.models.base import Base
 from helpbase.models.user import User
-from helpbase.routers import auth, dashboard, help_centers
+from helpbase.routers import articles, auth, dashboard, help_centers
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 STATIC_DIR = Path(__file__).parent / "static"
@@ -46,6 +46,7 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 app.include_router(auth.router)
 app.include_router(dashboard.router)
 app.include_router(help_centers.router)
+app.include_router(articles.router)
 
 
 # --- Health Check ---

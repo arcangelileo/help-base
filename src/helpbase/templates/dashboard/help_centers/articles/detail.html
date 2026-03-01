@@ -1,0 +1,153 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}{{ article.title }} — {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+<a href="/dashboard/help-centers/{{ hc.id }}/articles" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Articles</a>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<style>
+    .article-content h1 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; line-height: 1.3; }
+    .article-content h2 { font-size: 1.5rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem; color: #111827; line-height: 1.35; }
+    .article-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1f2937; }
+    .article-content h4 { font-size: 1.125rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #1f2937; }
+    .article-content p { margin-bottom: 1rem; line-height: 1.75; color: #374151; }
+    .article-content ul, .article-content ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #374151; }
+    .article-content li { margin-bottom: 0.25rem; line-height: 1.75; }
+    .article-content ul { list-style-type: disc; }
+    .article-content ol { list-style-type: decimal; }
+    .article-content code { font-size: 0.875rem; background: #f3f4f6; padding: 0.125rem 0.375rem; border-radius: 0.25rem; color: #dc2626; }
+    .article-content pre { margin-bottom: 1rem; border-radius: 0.5rem; overflow-x: auto; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .article-content pre code { display: block; padding: 1rem 1.25rem; background: transparent; color: #334155; }
+    .article-content blockquote { border-left: 4px solid #e5e7eb; padding-left: 1rem; margin-bottom: 1rem; color: #6b7280; font-style: italic; }
+    .article-content a { color: #4f46e5; text-decoration: underline; }
+    .article-content a:hover { color: #4338ca; }
+    .article-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    .article-content th, .article-content td { border: 1px solid #e5e7eb; padding: 0.5rem 0.75rem; text-align: left; }
+    .article-content th { background: #f9fafb; font-weight: 600; }
+    .article-content hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.5rem 0; }
+    .article-content img { max-width: 100%; border-radius: 0.5rem; margin-bottom: 1rem; }
+    .article-content .task-list-item { list-style: none; margin-left: -1.5rem; }
+    .article-content .task-list-item input[type="checkbox"] { margin-right: 0.5rem; }
+    .anchor-link { margin-left: 0.5rem; color: #9ca3af; text-decoration: none; opacity: 0; transition: opacity 0.15s; }
+    .article-content h1:hover .anchor-link,
+    .article-content h2:hover .anchor-link,
+    .article-content h3:hover .anchor-link { opacity: 1; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}/articles" class="hover:text-gray-700 transition-colors">Articles</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium truncate max-w-xs">{{ article.title }}</li>
+    </ol>
+</nav>
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-8 gap-4">
+    <div class="flex-1 min-w-0">
+        <div class="flex items-center space-x-3 mb-2">
+            <h1 class="text-2xl font-bold text-gray-900 truncate">{{ article.title }}</h1>
+            {% if article.is_published %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 flex-shrink-0">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                Published
+            </span>
+            {% else %}
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 flex-shrink-0">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+                Draft
+            </span>
+            {% endif %}
+        </div>
+        <div class="flex items-center space-x-3 text-sm text-gray-500">
+            <span class="font-mono text-xs">/{{ article.slug }}</span>
+            {% if article_category %}
+            <span class="text-gray-300">|</span>
+            <span class="inline-flex items-center">
+                {% if article_category.icon %}<span class="mr-1">{{ article_category.icon }}</span>{% endif %}
+                {{ article_category.name }}
+            </span>
+            {% endif %}
+            <span class="text-gray-300">|</span>
+            <span>{{ article.view_count }} view{{ 's' if article.view_count != 1 }}</span>
+        </div>
+    </div>
+    <div class="flex items-center space-x-2 flex-shrink-0">
+        <form method="POST" action="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}/toggle-publish" class="inline">
+            {% if article.is_published %}
+            <button type="submit" class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                </svg>
+                Unpublish
+            </button>
+            {% else %}
+            <button type="submit" class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                Publish
+            </button>
+            {% endif %}
+        </form>
+        <a href="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}/edit" class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Edit
+        </a>
+        <form method="POST" action="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}/delete" class="inline" onsubmit="return confirm('Delete this article? This action cannot be undone.');">
+            <button type="submit" class="inline-flex items-center px-3.5 py-2 text-sm font-medium text-red-600 bg-white border border-gray-300 rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Delete
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Article Content -->
+<div class="bg-white border border-gray-200 rounded-xl">
+    {% if article.excerpt %}
+    <div class="px-8 pt-6 pb-0">
+        <p class="text-gray-500 text-base italic border-l-4 border-brand-200 pl-4">{{ article.excerpt }}</p>
+    </div>
+    {% endif %}
+
+    <div class="px-8 py-6 article-content">
+        {% if content_html %}
+        {{ content_html|safe }}
+        {% else %}
+        <div class="text-center py-12">
+            <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">No content yet</h3>
+            <p class="text-gray-500 mb-4">This article doesn't have any content. Click Edit to start writing.</p>
+            <a href="/dashboard/help-centers/{{ hc.id }}/articles/{{ article.id }}/edit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Start Writing
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

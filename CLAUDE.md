@@ -38,7 +38,7 @@ Phase: DEVELOPMENT
 - [x] Build auth UI pages (login, register) with Tailwind styling
 - [x] Implement help center CRUD (API + dashboard UI)
 - [x] Implement category CRUD (API + dashboard UI)
-- [ ] Implement article CRUD with Markdown editor and live preview
+- [x] Implement article CRUD with Markdown editor and live preview
 - [ ] Build public-facing help center (article rendering, category nav, search)
 - [ ] Implement SQLite FTS5 search for articles
 - [ ] Add article view tracking and analytics dashboard
@@ -91,8 +91,21 @@ Phase: DEVELOPMENT
 - 18 help center tests + 16 category tests covering CRUD, validation, slugification, authorization, empty states
 - All 68 tests passing
 
+### Session 5 — ARTICLE CRUD
+- Article service: create, read, update, delete with auto-slugification, unique slug resolution, markdown rendering (pymdown-extensions), revision tracking (last 10 revisions)
+- Article router: list, create, detail (with rendered markdown), edit, delete, toggle publish/unpublish, markdown preview API
+- Article list template: shows all articles with title, slug, category, publish status (Published/Draft badges), view count, empty state
+- Article create template (new.html): Markdown editor with Write/Preview/Split view tabs, live client-side preview (marked.js), category select dropdown, excerpt field, publish checkbox, tab-key support in editor
+- Article detail template: rendered markdown content with styled prose (headings, code blocks, tables, lists, blockquotes), excerpt display, publish/unpublish toggle button, edit/delete actions, breadcrumb navigation, empty content state
+- Article edit template: pre-populated Markdown editor with same Write/Preview/Split functionality, danger zone with delete confirmation
+- Help center detail page: added "New Article" and "Manage Articles" quick action buttons, articles stat card links to articles list
+- Fixed routers/__init__.py to register the articles router
+- Fixed bcrypt compatibility issue with Python 3.13 (downgraded to bcrypt 4.1.3)
+- 31 new article tests: list (empty/populated/publish status), create (success, markdown rendering, published/draft, validation, slugification, duplicate slugs), detail (info, actions, nonexistent, empty content), edit (renders, update title/content, validation, preserve data on error), delete, toggle publish (both directions), markdown preview API, authorization (other user cannot access), help center detail articles link
+- All 99 tests passing
+
 ## Known Issues
-(none yet)
+- bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3
 
 ## Files Structure
 ```
@@ -123,6 +136,7 @@ help-base/
 │       ├── routers/
 │       │   ├── __init__.py
 │       │   ├── auth.py             # Auth routes (register, login, logout)
+│       │   ├── articles.py         # Article CRUD routes + markdown preview API
 │       │   ├── dashboard.py        # Dashboard routes (index with stats)
 │       │   └── help_centers.py     # Help center + category CRUD routes
 │       ├── schemas/
@@ -131,6 +145,7 @@ help-base/
 │       ├── services/
 │       │   ├── __init__.py
 │       │   ├── auth.py             # Auth service (password, JWT, user CRUD)
+│       │   ├── article.py          # Article CRUD service + markdown rendering
 │       │   ├── helpcenter.py       # Help center CRUD service
 │       │   └── category.py         # Category CRUD service
 │       ├── templates/
@@ -146,9 +161,14 @@ help-base/
 │       │   │       ├── new.html    # Create help center form
 │       │   │       ├── detail.html # Help center detail with categories
 │       │   │       ├── edit.html   # Edit help center form + danger zone
-│       │   │       └── categories/
-│       │   │           ├── new.html  # Create category form
-│       │   │           └── edit.html # Edit category form + danger zone
+│       │   │       ├── categories/
+│       │   │       │   ├── new.html  # Create category form
+│       │   │       │   └── edit.html # Edit category form + danger zone
+│       │   │       └── articles/
+│       │   │           ├── list.html   # Article list with status badges
+│       │   │           ├── new.html    # Create article with Markdown editor
+│       │   │           ├── detail.html # Article detail with rendered markdown
+│       │   │           └── edit.html   # Edit article with Markdown editor
 │       │   └── landing.html        # Landing page with hero, features, pricing
 │       └── static/
 │           ├── css/
@@ -157,6 +177,7 @@ help-base/
 └── tests/
     ├── __init__.py
     ├── conftest.py                 # Async test fixtures (db, client)
+    ├── test_articles.py             # Article CRUD tests (31)
     ├── test_auth.py                # Auth tests (27)
     ├── test_categories.py          # Category CRUD tests (16)
     ├── test_health.py              # Health check + landing page tests (4)

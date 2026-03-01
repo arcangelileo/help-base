@@ -1,0 +1,216 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}New Article — {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+<a href="/dashboard/help-centers/{{ hc.id }}/articles" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Articles</a>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}/articles" class="hover:text-gray-700 transition-colors">Articles</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium">New Article</li>
+    </ol>
+</nav>
+
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Write a New Article</h1>
+    <p class="mt-1 text-gray-600">Create documentation for {{ hc.name }}</p>
+</div>
+
+{% if errors %}
+<div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+    <div class="flex">
+        <svg class="w-5 h-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            {% for error in errors %}
+            <p class="text-sm text-red-700">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<form method="POST" action="/dashboard/help-centers/{{ hc.id }}/articles/new" id="article-form">
+    <!-- Title & Meta -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div class="space-y-5">
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-1.5">Title</label>
+                <input type="text" name="title" id="title" value="{{ form_data.title if form_data else '' }}" placeholder="e.g. Getting Started with Our API" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors text-gray-900" required>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
+                    <select name="category_id" id="category_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors text-gray-900 bg-white">
+                        <option value="">Uncategorized</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if form_data and form_data.category_id == cat.id %}selected{% endif %}>
+                            {% if cat.icon %}{{ cat.icon }} {% endif %}{{ cat.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-1.5">Excerpt</label>
+                    <input type="text" name="excerpt" id="excerpt" value="{{ form_data.excerpt if form_data else '' }}" placeholder="Brief summary for search results" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors text-gray-900">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown Editor -->
+    <div class="bg-white border border-gray-200 rounded-xl mb-6 overflow-hidden">
+        <div class="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+            <div class="flex items-center space-x-1">
+                <button type="button" id="tab-write" class="px-3 py-1.5 text-sm font-medium text-brand-700 bg-white rounded-md shadow-sm border border-gray-200" onclick="showTab('write')">Write</button>
+                <button type="button" id="tab-preview" class="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md" onclick="showTab('preview')">Preview</button>
+                <button type="button" id="tab-split" class="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md hidden sm:inline-flex" onclick="showTab('split')">Split</button>
+            </div>
+            <div class="flex items-center space-x-3 text-xs text-gray-500">
+                <span>Markdown supported</span>
+                <span class="hidden sm:inline text-gray-300">|</span>
+                <span class="hidden sm:inline">Tab to indent</span>
+            </div>
+        </div>
+        <div class="relative" style="min-height: 400px;">
+            <!-- Write panel -->
+            <div id="panel-write" class="h-full">
+                <textarea name="content_markdown" id="content_markdown" class="w-full h-full px-6 py-4 text-sm font-mono text-gray-900 border-0 focus:ring-0 resize-none" style="min-height: 400px;" placeholder="Write your article content in Markdown...&#10;&#10;# Heading&#10;&#10;Use **bold** and *italic* for emphasis.&#10;&#10;```python&#10;# Code blocks are supported too&#10;print('Hello!')&#10;```">{{ form_data.content_markdown if form_data else '' }}</textarea>
+            </div>
+            <!-- Preview panel -->
+            <div id="panel-preview" class="hidden h-full px-6 py-4 prose prose-sm max-w-none overflow-auto" style="min-height: 400px;">
+                <p class="text-gray-400 italic">Nothing to preview yet...</p>
+            </div>
+            <!-- Split view -->
+            <div id="panel-split" class="hidden h-full sm:grid sm:grid-cols-2 sm:divide-x sm:divide-gray-200" style="min-height: 400px;">
+                <div class="h-full">
+                    <textarea id="content_markdown_split" class="w-full h-full px-6 py-4 text-sm font-mono text-gray-900 border-0 focus:ring-0 resize-none" style="min-height: 400px;" placeholder="Write your article content in Markdown..."></textarea>
+                </div>
+                <div id="split-preview" class="h-full px-6 py-4 prose prose-sm max-w-none overflow-auto">
+                    <p class="text-gray-400 italic">Start typing to see preview...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Publish & Submit -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" name="is_published" id="is_published" class="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500" {% if form_data and form_data.is_published %}checked{% endif %}>
+                <div>
+                    <span class="text-sm font-medium text-gray-700">Publish immediately</span>
+                    <p class="text-xs text-gray-500">Make this article visible on your public help center</p>
+                </div>
+            </label>
+            <div class="flex items-center space-x-3">
+                <a href="/dashboard/help-centers/{{ hc.id }}/articles" class="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Cancel</a>
+                <button type="submit" class="px-6 py-2.5 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+                    Create Article
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+    const mainTextarea = document.getElementById('content_markdown');
+    const splitTextarea = document.getElementById('content_markdown_split');
+    const previewPanel = document.getElementById('panel-preview');
+    const splitPreview = document.getElementById('split-preview');
+    let currentTab = 'write';
+
+    // Configure marked
+    marked.setOptions({
+        breaks: true,
+        gfm: true,
+        highlight: null
+    });
+
+    function renderPreview(content, target) {
+        if (!content.trim()) {
+            target.innerHTML = '<p class="text-gray-400 italic">Nothing to preview yet...</p>';
+        } else {
+            target.innerHTML = marked.parse(content);
+        }
+    }
+
+    window.showTab = function(tab) {
+        currentTab = tab;
+        const tabWrite = document.getElementById('tab-write');
+        const tabPreview = document.getElementById('tab-preview');
+        const tabSplit = document.getElementById('tab-split');
+        const panelWrite = document.getElementById('panel-write');
+        const panelPreview = document.getElementById('panel-preview');
+        const panelSplit = document.getElementById('panel-split');
+
+        // Reset all tabs
+        [tabWrite, tabPreview, tabSplit].forEach(t => {
+            t.className = 'px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 rounded-md';
+            if (t === tabSplit) t.className += ' hidden sm:inline-flex';
+        });
+
+        // Hide all panels
+        panelWrite.classList.add('hidden');
+        panelPreview.classList.add('hidden');
+        panelSplit.classList.add('hidden');
+
+        if (tab === 'write') {
+            tabWrite.className = 'px-3 py-1.5 text-sm font-medium text-brand-700 bg-white rounded-md shadow-sm border border-gray-200';
+            panelWrite.classList.remove('hidden');
+        } else if (tab === 'preview') {
+            tabPreview.className = 'px-3 py-1.5 text-sm font-medium text-brand-700 bg-white rounded-md shadow-sm border border-gray-200';
+            panelPreview.classList.remove('hidden');
+            renderPreview(mainTextarea.value, previewPanel);
+        } else if (tab === 'split') {
+            tabSplit.className = 'px-3 py-1.5 text-sm font-medium text-brand-700 bg-white rounded-md shadow-sm border border-gray-200 hidden sm:inline-flex';
+            panelSplit.classList.remove('hidden');
+            splitTextarea.value = mainTextarea.value;
+            renderPreview(splitTextarea.value, splitPreview);
+        }
+    };
+
+    // Sync split textarea back to main
+    splitTextarea.addEventListener('input', function() {
+        mainTextarea.value = this.value;
+        renderPreview(this.value, splitPreview);
+    });
+
+    // Also sync main textarea to split when switching
+    mainTextarea.addEventListener('input', function() {
+        if (currentTab === 'split') {
+            splitTextarea.value = this.value;
+            renderPreview(this.value, splitPreview);
+        }
+    });
+
+    // Tab key support in textareas
+    [mainTextarea, splitTextarea].forEach(function(textarea) {
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+                this.dispatchEvent(new Event('input'));
+            }
+        });
+    });
+})();
+</script>
+{% endblock %}
