@@ -17,6 +17,7 @@ from helpbase.models.user import User
 from helpbase.routers import articles, auth, dashboard, help_centers
 from helpbase.routers.analytics import router as analytics_router
 from helpbase.routers.public import router as public_router
+from helpbase.routers.widget import router as widget_router
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 STATIC_DIR = Path(__file__).parent / "static"
@@ -67,6 +68,7 @@ app.include_router(help_centers.router)
 app.include_router(articles.router)
 app.include_router(analytics_router)
 app.include_router(public_router)
+app.include_router(widget_router)
 
 
 # --- Health Check ---

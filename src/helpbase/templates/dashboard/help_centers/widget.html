@@ -1,0 +1,208 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block title %}Embed Widget — {{ hc.name }} — HelpBase{% endblock %}
+
+{% block nav_items %}
+<a href="/dashboard" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">Dashboard</a>
+<a href="/dashboard/help-centers/{{ hc.id }}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors">{{ hc.name }}</a>
+<span class="px-3 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg">Embed Widget</span>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+        <li><a href="/dashboard" class="hover:text-gray-700 transition-colors">Dashboard</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li><a href="/dashboard/help-centers/{{ hc.id }}" class="hover:text-gray-700 transition-colors">{{ hc.name }}</a></li>
+        <li><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></li>
+        <li class="text-gray-900 font-medium">Embed Widget</li>
+    </ol>
+</nav>
+
+<!-- Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Embeddable Search Widget</h1>
+    <p class="mt-2 text-gray-500">Add a search widget to your website so customers can find help articles without leaving your product.</p>
+</div>
+
+<!-- Embed Code Section -->
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden mb-8">
+    <div class="px-6 py-5 border-b border-gray-200">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900">Installation</h2>
+                <p class="text-sm text-gray-500">Copy this code and paste it before the closing <code class="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">&lt;/body&gt;</code> tag on your website.</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-6">
+        <div class="relative">
+            <pre class="bg-gray-900 text-gray-100 rounded-lg p-5 text-sm font-mono overflow-x-auto leading-relaxed" id="embed-code"><code>&lt;!-- HelpBase Search Widget --&gt;
+&lt;script src="{{ base_url }}/widget/{{ hc.slug }}/embed.js" async&gt;&lt;/script&gt;</code></pre>
+            <button onclick="copyCode()" id="copy-btn" class="absolute top-3 right-3 inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-700 hover:text-white transition-colors">
+                <svg class="w-3.5 h-3.5 mr-1.5" id="copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                <span id="copy-text">Copy</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden mb-8">
+    <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">How It Works</h2>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand-600">1</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-1">Add the Script</h3>
+                    <p class="text-sm text-gray-500">Paste the embed code on any page where you want the help widget to appear.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand-600">2</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-1">Widget Appears</h3>
+                    <p class="text-sm text-gray-500">A floating help button appears in the bottom-right corner of your page, matching your brand color.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand-600">3</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-1">Instant Search</h3>
+                    <p class="text-sm text-gray-500">Customers search your help articles in real-time without leaving your website.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden mb-8">
+    <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Widget Features</h2>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Brand color matching</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Real-time search with debouncing</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Keyboard shortcuts (Escape to close)</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Mobile responsive</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Highlighted search snippets</span>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-sm text-gray-700">Lightweight — no dependencies</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview -->
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Preview</h2>
+        <p class="mt-1 text-sm text-gray-500">This is how the widget will look on your website.</p>
+    </div>
+    <div class="p-6">
+        <div class="bg-gray-100 rounded-lg p-8 min-h-[300px] relative overflow-hidden border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400 text-sm mb-4">Your website content</div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-md mx-auto">
+                <div class="h-3 bg-gray-200 rounded w-3/4 mb-3"></div>
+                <div class="h-3 bg-gray-200 rounded w-full mb-3"></div>
+                <div class="h-3 bg-gray-200 rounded w-5/6 mb-3"></div>
+                <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+            </div>
+            <!-- Simulated Widget Button -->
+            <button onclick="togglePreview()" id="preview-btn" class="absolute bottom-6 right-6 w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform" style="background-color: {{ hc.primary_color }};">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </button>
+            <!-- Simulated Widget Panel -->
+            <div id="preview-panel" class="absolute bottom-24 right-6 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden hidden">
+                <div class="px-4 py-3 text-white text-sm font-semibold flex items-center justify-between" style="background-color: {{ hc.primary_color }};">
+                    <span>{{ hc.name }} Help</span>
+                    <button onclick="togglePreview()" class="text-white opacity-80 hover:opacity-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                <div class="p-3 border-b border-gray-200">
+                    <div class="relative">
+                        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="Search for help..." class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50" disabled>
+                    </div>
+                </div>
+                <div class="p-6 text-center text-gray-400 text-xs">
+                    <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Type to search help articles
+                </div>
+                <div class="px-3 py-2 border-t border-gray-200 text-center">
+                    <span class="text-[10px] text-gray-400">Powered by HelpBase</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyCode() {
+    var code = '<!-- HelpBase Search Widget -->\n<script src="{{ base_url }}/widget/{{ hc.slug }}/embed.js" async><\/script>';
+    navigator.clipboard.writeText(code).then(function() {
+        document.getElementById('copy-text').textContent = 'Copied!';
+        document.getElementById('copy-icon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+        setTimeout(function() {
+            document.getElementById('copy-text').textContent = 'Copy';
+            document.getElementById('copy-icon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>';
+        }, 2000);
+    });
+}
+
+function togglePreview() {
+    var panel = document.getElementById('preview-panel');
+    panel.classList.toggle('hidden');
+}
+</script>
+{% endblock %}

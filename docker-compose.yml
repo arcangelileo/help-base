@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - helpbase-data:/app/data
+    environment:
+      - HELPBASE_SECRET_KEY=${HELPBASE_SECRET_KEY:-change-me-in-production-please}
+      - HELPBASE_BASE_URL=${HELPBASE_BASE_URL:-http://localhost:8000}
+      - HELPBASE_DEBUG=${HELPBASE_DEBUG:-false}
+      - HELPBASE_DATABASE_URL=sqlite+aiosqlite:///app/data/helpbase.db
+    restart: unless-stopped
+
+volumes:
+  helpbase-data:

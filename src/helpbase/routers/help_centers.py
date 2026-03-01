@@ -412,3 +412,32 @@ async def reorder_categories_submit(
         await reorder_categories(db, hc.id, category_ids)
         await db.commit()
     return {"status": "ok"}
+
+
+# ============================================================
+# Embed Widget Page
+# ============================================================
+
+
+@router.get("/{hc_id}/widget", response_class=HTMLResponse)
+async def widget_page(
+    request: Request,
+    hc_id: str,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Show the embed widget code page."""
+    hc = await get_help_center_by_id(db, hc_id, owner_id=user.id)
+    if not hc:
+        return RedirectResponse(url="/dashboard", status_code=303)
+
+    return templates.TemplateResponse(
+        request,
+        "dashboard/help_centers/widget.html",
+        {
+            "settings": settings,
+            "user": user,
+            "hc": hc,
+            "base_url": settings.base_url.rstrip("/"),
+        },
+    )

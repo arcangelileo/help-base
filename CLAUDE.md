@@ -42,9 +42,9 @@ Phase: DEVELOPMENT
 - [x] Build public-facing help center (article rendering, category nav, search)
 - [x] Implement SQLite FTS5 search for articles
 - [x] Add article view tracking and analytics dashboard
-- [ ] Build embeddable search widget (JS snippet + iframe endpoint)
-- [ ] Write comprehensive tests (auth, CRUD, search, public pages)
-- [ ] Write Dockerfile and docker-compose.yml
+- [x] Build embeddable search widget (JS snippet + iframe endpoint)
+- [x] Write comprehensive tests (auth, CRUD, search, public pages)
+- [x] Write Dockerfile and docker-compose.yml
 - [ ] Write README with setup and deploy instructions
 
 ## Progress Log
@@ -117,6 +117,17 @@ Phase: DEVELOPMENT
 - 27 new tests: public home/404, categories display, articles rendering, draft exclusion, view tracking, breadcrumbs, category pages, search (empty/results/no results/draft exclusion), search API, analytics dashboard (auth/render/authorization), view tracking with search query, header search form
 - All 126 tests passing
 
+### Session 7 — EMBEDDABLE WIDGET, TESTS & DOCKER
+- Embeddable search widget: JS snippet served from `/widget/{slug}/embed.js` with CORS headers, floating button with brand color, slide-up panel with search input, debounced real-time search, Escape to close, mobile-responsive
+- Widget search API: `/widget/{slug}/search` JSON endpoint with CORS for cross-origin embedding, returns article results with URLs and snippets
+- Widget dashboard page: embed code with copy button, installation instructions, how-it-works guide, feature list, interactive preview
+- Help center detail page updated with "Embed Widget" button
+- Dockerfile: Python 3.13-slim, pip install from pyproject.toml, uvicorn entrypoint, SQLite data volume
+- docker-compose.yml: single service with persistent volume, environment variable configuration
+- .dockerignore: excludes .venv, __pycache__, .git, .db files
+- 22 new widget tests: JS snippet (serves JavaScript, contains slug/brand color/name, CORS headers, search functionality, nonexistent HC), search API (JSON results, CORS, empty query, nonexistent HC, excludes drafts, result URLs, CORS preflight), dashboard page (auth, renders, correct snippet, authorization, nonexistent HC, how-it-works, preview, widget link)
+- All 148 tests passing
+
 ## Known Issues
 - bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3
 
@@ -126,6 +137,9 @@ help-base/
 ├── CLAUDE.md
 ├── pyproject.toml
 ├── alembic.ini
+├── Dockerfile                     # Production Docker image
+├── docker-compose.yml             # Docker Compose config
+├── .dockerignore
 ├── alembic/
 │   ├── env.py
 │   ├── script.py.mako
@@ -152,8 +166,9 @@ help-base/
 │       │   ├── analytics.py        # Analytics dashboard route
 │       │   ├── articles.py         # Article CRUD routes + markdown preview API
 │       │   ├── dashboard.py        # Dashboard routes (index with stats)
-│       │   ├── help_centers.py     # Help center + category CRUD routes
-│       │   └── public.py           # Public help center routes (home, article, search)
+│       │   ├── help_centers.py     # Help center + category CRUD routes + widget page
+│       │   ├── public.py           # Public help center routes (home, article, search)
+│       │   └── widget.py           # Embeddable widget routes (JS snippet, search API)
 │       ├── schemas/
 │       │   ├── __init__.py
 │       │   └── auth.py             # Auth Pydantic schemas
@@ -179,6 +194,7 @@ help-base/
 │       │   │       ├── detail.html # Help center detail with categories
 │       │   │       ├── edit.html   # Edit help center form + danger zone
 │       │   │       ├── analytics.html # Analytics dashboard (views, searches)
+│       │   │       ├── widget.html  # Embed widget code page
 │       │   │       ├── categories/
 │       │   │       │   ├── new.html  # Create category form
 │       │   │       │   └── edit.html # Edit category form + danger zone
@@ -208,5 +224,6 @@ help-base/
     ├── test_health.py              # Health check + landing page tests (4)
     ├── test_help_centers.py        # Help center CRUD tests (18)
     ├── test_models.py              # Model CRUD tests (3)
-    └── test_public.py              # Public pages, search, analytics tests (27)
+    ├── test_public.py              # Public pages, search, analytics tests (27)
+    └── test_widget.py              # Embeddable widget tests (22)
 ```
