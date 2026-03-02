@@ -1,6 +1,5 @@
 """Comprehensive tests for help center CRUD."""
 
-import pytest
 from httpx import AsyncClient
 
 

@@ -3,7 +3,6 @@
 import re
 
 import markdown
-from pymdownx import emoji
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload

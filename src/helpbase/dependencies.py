@@ -20,7 +20,6 @@ async def get_current_user(
     if not access_token:
         # For HTML pages, redirect to login instead of returning JSON error
         if "text/html" in request.headers.get("accept", ""):
-            from fastapi.responses import RedirectResponse
 
             raise HTTPException(
                 status_code=status.HTTP_303_SEE_OTHER,
@@ -34,7 +33,6 @@ async def get_current_user(
     payload = decode_access_token(access_token)
     if payload is None:
         if "text/html" in request.headers.get("accept", ""):
-            from fastapi.responses import RedirectResponse
 
             raise HTTPException(
                 status_code=status.HTTP_303_SEE_OTHER,

@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi import APIRouter, Depends, Query
+from fastapi.responses import JSONResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

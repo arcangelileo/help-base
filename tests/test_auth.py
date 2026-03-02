@@ -1,6 +1,5 @@
 """Comprehensive tests for authentication system."""
 
-import pytest
 from httpx import AsyncClient
 
 from helpbase.services.auth import (

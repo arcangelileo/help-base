@@ -1,6 +1,6 @@
 # HelpBase
 
-Phase: DEPLOYMENT
+Phase: COMPLETE
 
 ## Project Spec
 - **Repo**: https://github.com/arcangelileo/help-base
@@ -155,6 +155,15 @@ Phase: DEPLOYMENT
 - All 148 tests passing
 - Advanced project phase from QA to DEPLOYMENT
 
+### Session 10 — DEPLOYMENT & FINALIZATION
+- **Dockerfile**: Rewrote as multi-stage build (builder + runtime stages) for smaller image, added non-root `helpbase` user (UID 1000), health check via `/health` endpoint, `exec` form CMD for proper signal handling (PID 1 receives SIGTERM), graceful shutdown timeout, auto-runs Alembic migrations on startup
+- **docker-compose.yml**: Added health check configuration, configurable port via `HELPBASE_PORT`, JWT expiration passthrough, restart policy
+- **`.env.example`**: Created with all documented environment variables and generation instructions for secret key
+- **README.md**: Comprehensive rewrite — project description, full feature list, tech stack table, Docker quick start one-liner, local dev setup, configuration table, test suite breakdown, ASCII architecture diagram, embeddable widget docs, complete API endpoint reference (30+ endpoints), project structure, contributing guidelines
+- **Code cleanup**: Ran ruff linter and fixed 22 issues — removed unused imports across 11 files (app.py, dependencies.py, articles.py, dashboard.py, help_centers.py, public.py, widget.py, article.py, helpcenter.py, and test files), removed unused variable assignment, removed extraneous f-string prefixes
+- All 148 tests passing, ruff reports zero issues
+- Advanced project phase from DEPLOYMENT to COMPLETE
+
 ## Known Issues
 - bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3
 
@@ -162,12 +171,13 @@ Phase: DEPLOYMENT
 ```
 help-base/
 ├── CLAUDE.md
-├── README.md                      # Setup and deploy instructions
+├── README.md                      # Comprehensive docs (setup, API, architecture)
 ├── pyproject.toml
 ├── alembic.ini
-├── Dockerfile                     # Production Docker image
+├── Dockerfile                     # Multi-stage production Docker image
 ├── docker-compose.yml             # Docker Compose config
 ├── .dockerignore
+├── .env.example                   # Documented environment variables
 ├── alembic/
 │   ├── env.py
 │   ├── script.py.mako

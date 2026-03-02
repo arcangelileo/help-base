@@ -1,6 +1,5 @@
 """Comprehensive tests for category CRUD."""
 
-import pytest
 from httpx import AsyncClient
 
 

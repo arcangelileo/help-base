@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from helpbase.models.article import Article
-from helpbase.models.category import Category
 from helpbase.models.helpcenter import HelpCenter
 
 

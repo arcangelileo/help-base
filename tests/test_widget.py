@@ -1,6 +1,5 @@
 """Tests for the embeddable search widget — JS snippet, search API, dashboard page."""
 
-import pytest
 from httpx import AsyncClient
 
 
@@ -344,7 +343,7 @@ async def test_help_center_detail_has_widget_link(client: AsyncClient):
     resp = await client.get(f"/dashboard/help-centers/{hc_id}")
     assert resp.status_code == 200
     assert "Embed Widget" in resp.text
-    assert f"/widget" in resp.text
+    assert "/widget" in resp.text
 
 
 async def test_widget_page_has_how_it_works(client: AsyncClient):

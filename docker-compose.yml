@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "8000:8000"
+      - "${HELPBASE_PORT:-8000}:8000"
     volumes:
       - helpbase-data:/app/data
     environment:
@@ -10,7 +10,14 @@ services:
       - HELPBASE_BASE_URL=${HELPBASE_BASE_URL:-http://localhost:8000}
       - HELPBASE_DEBUG=${HELPBASE_DEBUG:-false}
       - HELPBASE_DATABASE_URL=sqlite+aiosqlite:///app/data/helpbase.db
+      - HELPBASE_JWT_EXPIRE_MINUTES=${HELPBASE_JWT_EXPIRE_MINUTES:-10080}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 volumes:
   helpbase-data:

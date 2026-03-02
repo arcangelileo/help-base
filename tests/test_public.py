@@ -1,6 +1,5 @@
 """Comprehensive tests for public-facing help center pages, search, and view tracking."""
 
-import pytest
 from httpx import AsyncClient
 
 
@@ -212,7 +211,7 @@ async def test_public_article_tracks_view(client: AsyncClient):
     """Viewing an article should increment its view count."""
     await register_and_login(client)
     hc_id = await create_help_center(client, name="View Track HC")
-    article_id = await create_article(
+    await create_article(
         client, hc_id, title="Tracked Article", is_published="on"
     )
     slug = await get_hc_slug(client, hc_id)
@@ -447,7 +446,7 @@ async def test_help_center_detail_has_analytics_link(client: AsyncClient):
     resp = await client.get(f"/dashboard/help-centers/{hc_id}")
     assert resp.status_code == 200
     assert "Analytics" in resp.text
-    assert f"/analytics" in resp.text
+    assert "/analytics" in resp.text
 
 
 # ============================================================

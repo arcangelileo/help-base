@@ -15,7 +15,6 @@ from helpbase.services.article import (
     create_article,
     delete_article,
     get_article_by_id,
-    get_article_revisions,
     get_articles_for_help_center,
     get_categories_for_select,
     render_markdown_to_html,

@@ -1,6 +1,5 @@
 """Comprehensive tests for article CRUD."""
 
-import pytest
 from httpx import AsyncClient
 
 
@@ -665,4 +664,4 @@ async def test_help_center_detail_shows_articles_link(client: AsyncClient):
     assert resp.status_code == 200
     assert "Manage Articles" in resp.text
     assert "New Article" in resp.text
-    assert f"/articles" in resp.text
+    assert "/articles" in resp.text

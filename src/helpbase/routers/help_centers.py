@@ -15,8 +15,6 @@ from helpbase.models.user import User
 from helpbase.services.category import (
     create_category,
     delete_category,
-    get_article_count,
-    get_categories_for_help_center,
     get_category_by_id,
     reorder_categories,
     update_category,
