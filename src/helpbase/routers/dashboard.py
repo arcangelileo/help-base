@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
@@ -26,6 +26,7 @@ async def dashboard_index(
     request: Request,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
+    success: str = Query(default=""),
 ):
     """Main dashboard page."""
     # Get user's help centers
@@ -56,5 +57,6 @@ async def dashboard_index(
             "help_center_count": len(help_centers),
             "article_count": article_count,
             "total_views": total_views,
+            "success": success,
         },
     )

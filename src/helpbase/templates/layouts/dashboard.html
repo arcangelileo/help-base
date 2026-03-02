@@ -21,15 +21,37 @@
                         {% endblock %}
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex items-center space-x-3">
                         <div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
                             <span class="text-sm font-medium text-brand-700">{{ user.full_name[0]|upper }}</span>
                         </div>
-                        <span class="hidden sm:block text-sm font-medium text-gray-700">{{ user.full_name }}</span>
+                        <span class="text-sm font-medium text-gray-700">{{ user.full_name }}</span>
                     </div>
-                    <a href="/auth/logout" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">Sign out</a>
+                    <a href="/auth/logout" class="hidden sm:inline-flex text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">Sign out</a>
+                    <!-- Mobile menu button -->
+                    <button type="button" id="mobile-menu-btn" class="sm:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Open menu">
+                        <svg class="w-5 h-5" id="mobile-menu-icon-open" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg class="w-5 h-5 hidden" id="mobile-menu-icon-close" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
+            </div>
+        </div>
+        <!-- Mobile menu panel -->
+        <div class="sm:hidden hidden border-t border-gray-200 bg-gray-50" id="mobile-menu-panel">
+            <div class="px-4 py-3 space-y-1" id="mobile-nav-links"></div>
+            <div class="px-4 py-3 border-t border-gray-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
+                        <span class="text-sm font-medium text-brand-700">{{ user.full_name[0]|upper }}</span>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">{{ user.full_name }}</span>
+                </div>
+                <a href="/auth/logout" class="block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">Sign out</a>
             </div>
         </div>
     </nav>
@@ -41,4 +63,29 @@
         </div>
     </main>
 </div>
+
+<script>
+(function() {
+    var btn = document.getElementById('mobile-menu-btn');
+    var panel = document.getElementById('mobile-menu-panel');
+    var iconOpen = document.getElementById('mobile-menu-icon-open');
+    var iconClose = document.getElementById('mobile-menu-icon-close');
+    var mobileNav = document.getElementById('mobile-nav-links');
+    // Clone desktop nav links into mobile menu
+    var desktopLinks = document.querySelectorAll('.hidden.sm\\:flex.items-center a');
+    desktopLinks.forEach(function(link) {
+        var clone = link.cloneNode(true);
+        clone.className = 'block px-3 py-2 text-sm font-medium rounded-lg transition-colors ' +
+            (link.classList.contains('bg-brand-50') ? 'text-brand-600 bg-brand-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100');
+        mobileNav.appendChild(clone);
+    });
+    if (btn && panel) {
+        btn.addEventListener('click', function() {
+            panel.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden');
+            iconClose.classList.toggle('hidden');
+        });
+    }
+})();
+</script>
 {% endblock %}

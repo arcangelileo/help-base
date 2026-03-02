@@ -51,7 +51,7 @@ async def create_category_via_form(
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert resp.headers["location"] == f"/dashboard/help-centers/{hc_id}"
+    assert resp.headers["location"].startswith(f"/dashboard/help-centers/{hc_id}")
 
 
 # ============================================================

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,6 +40,7 @@ async def articles_list(
     hc_id: str,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
+    success: str = Query(default=""),
 ):
     """List all articles for a help center."""
     hc = await get_help_center_by_id(db, hc_id, owner_id=user.id)
@@ -61,6 +62,7 @@ async def articles_list(
             "hc": hc,
             "articles": articles,
             "category_map": category_map,
+            "success": success,
         },
     )
 
@@ -343,7 +345,7 @@ async def delete_article_submit(
 
     await delete_article(db, article)
     await db.commit()
-    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}/articles", status_code=303)
+    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}/articles?success=Article+deleted+successfully", status_code=303)
 
 
 # ============================================================

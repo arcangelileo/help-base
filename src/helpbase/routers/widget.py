@@ -35,6 +35,8 @@ async def widget_js(
 
     base_url = settings.base_url.rstrip("/")
     primary_color = hc.primary_color or "#4F46E5"
+    # Escape HC name for safe JS string insertion
+    safe_name = hc.name.replace("\\", "\\\\").replace("'", "\\'").replace("<", "\\x3c").replace(">", "\\x3e").replace("\n", " ").replace("\r", "")
 
     js_code = f"""
 (function() {{
@@ -46,7 +48,7 @@ async def widget_js(
   var SLUG = '{slug}';
   var BASE_URL = '{base_url}';
   var PRIMARY_COLOR = '{primary_color}';
-  var HC_NAME = '{hc.name.replace("'", "\\'")}';
+  var HC_NAME = '{safe_name}';
 
   // Create widget container
   var container = document.createElement('div');
@@ -307,14 +309,14 @@ async def widget_js(
         .then(function(r) {{ return r.json(); }})
         .then(function(data) {{
           if (!data.results || data.results.length === 0) {{
-            resultsDiv.innerHTML = '<div class="helpbase-empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p>No results found for &ldquo;' + q + '&rdquo;</p></div>';
+            resultsDiv.innerHTML = '<div class="helpbase-empty"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p>No results found for &ldquo;' + escapeHtml(q) + '&rdquo;</p></div>';
             return;
           }}
           var html = '';
           data.results.forEach(function(r) {{
-            html += '<a class="helpbase-result-item" href="' + r.url + '" target="_blank">';
+            html += '<a class="helpbase-result-item" href="' + escapeHtml(r.url) + '" target="_blank" rel="noopener noreferrer">';
             html += '<h4>' + escapeHtml(r.title) + '</h4>';
-            html += '<p>' + r.snippet + '</p>';
+            if (r.snippet) {{ html += '<p>' + sanitizeSnippet(r.snippet) + '</p>'; }}
             html += '</a>';
           }});
           resultsDiv.innerHTML = html;
@@ -329,6 +331,12 @@ async def widget_js(
     var d = document.createElement('div');
     d.textContent = text;
     return d.innerHTML;
+  }}
+
+  function sanitizeSnippet(html) {{
+    // Only allow <mark> tags from FTS5 snippet() — strip everything else
+    return html.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\\/mark&gt;/g,'</mark>');
   }}
 }})();
 """

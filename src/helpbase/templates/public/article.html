@@ -2,6 +2,8 @@
 
 {% block title %}{{ article.title }} — {{ hc.name }}{% endblock %}
 
+{% block meta %}<meta name="description" content="{{ article.excerpt or (article.title ~ ' — ' ~ hc.name ~ ' Help Center') }}">{% endblock %}
+
 {% block head %}
 <style>
     .article-content h1 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #111827; line-height: 1.3; }

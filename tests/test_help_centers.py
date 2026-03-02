@@ -256,7 +256,7 @@ async def test_delete_help_center(client: AsyncClient):
         f"/dashboard/help-centers/{hc_id}/delete", follow_redirects=False
     )
     assert resp.status_code == 303
-    assert resp.headers["location"] == "/dashboard"
+    assert resp.headers["location"].startswith("/dashboard")
 
     # Verify it's gone
     detail = await client.get(f"/dashboard/help-centers/{hc_id}", follow_redirects=False)

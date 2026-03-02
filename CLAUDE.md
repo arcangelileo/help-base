@@ -1,6 +1,6 @@
 # HelpBase
 
-Phase: QA
+Phase: DEPLOYMENT
 
 ## Project Spec
 - **Repo**: https://github.com/arcangelileo/help-base
@@ -132,6 +132,28 @@ Phase: QA
 - Wrote comprehensive README.md: project overview, features list, tech stack, quick start (local dev + Docker), configuration table, test instructions, project structure, embeddable widget usage, full API endpoint reference
 - All 148 tests passing, all backlog items complete
 - Advanced project phase from DEVELOPMENT to QA
+
+### Session 9 — QA & POLISH
+- **Security fixes**:
+  - Fixed XSS vulnerability in embeddable widget JS: HC name now properly escaped (backslashes, quotes, angle brackets, newlines), snippet HTML sanitized to only allow `<mark>` tags, URLs escaped in result links, search query escaped in "no results" message
+  - Added `rel="noopener noreferrer"` to all `target="_blank"` links across dashboard templates
+- **Mobile responsiveness**:
+  - Added hamburger menu to dashboard layout: mobile menu button with open/close toggle, slide-down panel cloning desktop nav links via JS, user info section with sign-out
+- **Error handling**:
+  - Added global 404 error handler in app.py using `@app.exception_handler(StarletteHTTPException)` — catches all unmatched routes and renders the styled 404 page
+- **UX improvements**:
+  - Added success flash messages (via URL query params) to dashboard index, help center detail, and article list pages — shown as green banners after create/edit/delete operations
+  - Success messages on: HC delete, HC settings update, category create/edit/delete, article delete
+- **SEO improvements**:
+  - Added `{% block meta %}` to public base template with meta description from HC description
+  - Article page overrides meta description with article excerpt
+- **Landing page polish**:
+  - Added social proof section with stats (5 min setup, 99.9% uptime, <50ms search)
+  - Added final CTA section with gradient brand-colored background
+  - Replaced minimal footer with full dark footer (Product/Support columns, copyright)
+- **Test fixes**: Updated 11 test assertions to account for new `?success=` query params on redirect URLs
+- All 148 tests passing
+- Advanced project phase from QA to DEPLOYMENT
 
 ## Known Issues
 - bcrypt 5.0 incompatible with passlib on Python 3.13 — pinned to bcrypt 4.1.3

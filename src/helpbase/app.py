@@ -4,8 +4,10 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 
@@ -69,6 +71,26 @@ app.include_router(articles.router)
 app.include_router(analytics_router)
 app.include_router(public_router)
 app.include_router(widget_router)
+
+
+# --- Error Handlers ---
+
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Custom handler for HTTP exceptions (404, 500, etc.)."""
+    if exc.status_code == 404:
+        return templates.TemplateResponse(
+            request,
+            "public/404.html",
+            {"settings": settings},
+            status_code=404,
+        )
+    # For other HTTP errors, return a JSON response
+    return HTMLResponse(
+        content=f"<h1>Error {exc.status_code}</h1><p>{exc.detail}</p>",
+        status_code=exc.status_code,
+    )
 
 
 # --- Health Check ---

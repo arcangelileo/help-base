@@ -3,7 +3,7 @@
 import re
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -106,6 +106,7 @@ async def help_center_detail(
     hc_id: str,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
+    success: str = Query(default=""),
 ):
     """Help center detail page — shows categories and article stats."""
     hc = await get_help_center_with_categories(db, hc_id, user.id)
@@ -127,6 +128,7 @@ async def help_center_detail(
             "article_count": article_count,
             "category_article_counts": category_article_counts,
             "uncategorized_count": uncategorized_count,
+            "success": success,
         },
     )
 
@@ -202,7 +204,7 @@ async def edit_help_center_submit(
 
     await update_help_center(db, hc, name=name, description=description, primary_color=primary_color)
     await db.commit()
-    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}", status_code=303)
+    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}?success=Settings+updated+successfully", status_code=303)
 
 
 @router.post("/{hc_id}/delete")
@@ -218,7 +220,7 @@ async def delete_help_center_submit(
 
     await delete_help_center(db, hc)
     await db.commit()
-    return RedirectResponse(url="/dashboard", status_code=303)
+    return RedirectResponse(url="/dashboard?success=Help+center+deleted+successfully", status_code=303)
 
 
 # ============================================================
@@ -286,7 +288,7 @@ async def create_category_submit(
 
     await create_category(db, name=name, help_center_id=hc.id, description=description, icon=icon)
     await db.commit()
-    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}", status_code=303)
+    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}?success=Category+created+successfully", status_code=303)
 
 
 @router.get("/{hc_id}/categories/{cat_id}/edit", response_class=HTMLResponse)
@@ -370,7 +372,7 @@ async def edit_category_submit(
 
     await update_category(db, cat, name=name, description=description, icon=icon)
     await db.commit()
-    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}", status_code=303)
+    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}?success=Category+updated+successfully", status_code=303)
 
 
 @router.post("/{hc_id}/categories/{cat_id}/delete")
@@ -391,7 +393,7 @@ async def delete_category_submit(
 
     await delete_category(db, cat)
     await db.commit()
-    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}", status_code=303)
+    return RedirectResponse(url=f"/dashboard/help-centers/{hc.id}?success=Category+deleted+successfully", status_code=303)
 
 
 @router.post("/{hc_id}/categories/reorder")

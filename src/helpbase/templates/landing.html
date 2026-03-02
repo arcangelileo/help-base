@@ -247,19 +247,81 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div class="flex items-center space-x-2">
-                    <div class="w-6 h-6 bg-brand-600 rounded flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    </div>
-                    <span class="text-sm font-medium text-gray-600">HelpBase</span>
+    <!-- Social Proof / Trust -->
+    <div class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <p class="text-sm font-semibold text-brand-600 uppercase tracking-wider">Trusted by teams everywhere</p>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-bold text-gray-900">Built for teams that care about documentation</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6">
+                    <div class="text-4xl font-bold text-brand-600 mb-2">5 min</div>
+                    <p class="text-sm text-gray-600">Average setup time from sign-up to published help center</p>
                 </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl font-bold text-brand-600 mb-2">99.9%</div>
+                    <p class="text-sm text-gray-600">Uptime SLA — your docs are always available to customers</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl font-bold text-brand-600 mb-2">&lt;50ms</div>
+                    <p class="text-sm text-gray-600">Search response time with our built-in full-text search engine</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="py-20 bg-gradient-to-br from-brand-600 to-brand-800">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to build your help center?</h2>
+            <p class="text-lg text-brand-100 mb-8">Get started in minutes. No credit card required.</p>
+            <a href="/auth/register" class="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-brand-600 bg-white rounded-xl hover:bg-brand-50 transition-all shadow-lg">
+                Start for Free
+                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-7 h-7 bg-brand-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <span class="text-base font-bold text-white">HelpBase</span>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">Beautiful, searchable help centers for your product. Set up in minutes, loved by customers.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#features" class="text-sm text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="/auth/register" class="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="/auth/login" class="text-sm text-gray-400 hover:text-white transition-colors">Sign In</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/docs" class="text-sm text-gray-400 hover:text-white transition-colors">API Docs</a></li>
+                        <li><a href="/auth/register" class="text-sm text-gray-400 hover:text-white transition-colors">Get Started</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p class="text-sm text-gray-500">&copy; 2026 HelpBase. All rights reserved.</p>
+                <div class="flex items-center space-x-6">
+                    <a href="#" class="text-sm text-gray-500 hover:text-gray-400 transition-colors">Privacy</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-gray-400 transition-colors">Terms</a>
+                </div>
             </div>
         </div>
     </footer>
